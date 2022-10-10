@@ -2,3 +2,5 @@ frontend/node_modules
 venv/
 backend/db/
 data/
+.swp
+.pyc

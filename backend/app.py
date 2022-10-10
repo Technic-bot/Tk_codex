@@ -13,24 +13,19 @@ def get_db_connection(db_file):
 @app.route("/test")
 def test_api():
   conn = get_db_connection(app.config['DATABASE'])
-  res = conn.execute('Select count(*) from twokinds_comic').fetchone()
+  res = conn.execute('Select count(*) from comic').fetchone()
   conn.close()
   return {"Records": res[0]} 
 
-@app.route("/text")
-def text_search():
-  conn = get_db_connection(app.config['DATABASE'])
-  res = conn.execute('Select count(*) from twokinds_chars').fetchone()
-  conn.close()
-  print(res[0])
-  return {"Hello": "World"} 
-
 @app.route("/art",methods=['POST'])
 def char_post():
-  print("hola")
-  data = request.json
-  print(data)
-  return data
+  query = request.json['query']
+  characters = query.split()
+  if not characters:
+    return {"pages": []},404
+
+  r = char_search(characters)
+  return r
 
 @app.route("/art",methods=['GET'])
 def char_get():
@@ -44,14 +39,16 @@ def char_get():
 
 def char_search(characters):
   """Query DB for pages"""
+  characters = [c.lower() for c in characters]
   # Not sure if group by and having is the correct method
   question_marks = ','.join('?'*len(characters))
-  sql_stmt = ('SELECT comic.page,comic.url, count(*) n FROM chars'
+  sql_stmt = ('SELECT comic.page, comic.url, comic.title, comic.date,'
+              ' count(*) n FROM chars'
               ' INNER JOIN comic ON'
               ' comic.page = chars.page'
-              ' WHERE CHARACTER IN ({}) group by comic.page having n == {};')
+              ' WHERE lower(CHARACTER) IN ({}) group by comic.page having n == {}'
+              ' ORDER BY comic.page;')
   prep_sql_stmt=sql_stmt.format(question_marks,len(characters)) 
-  print(prep_sql_stmt)
   conn = get_db_connection(app.config['DATABASE'])
   rows = conn.execute(prep_sql_stmt,characters).fetchall()
   conn.close()
@@ -59,8 +56,10 @@ def char_search(characters):
 
   response = []
   for r in rows:
-    page_dic = {'page':r['page'],
-                'url': r['url']}
+    page_dic = {'number':r['page'],
+                'url': r['url'],
+                'title': r['title'],
+                'date': r['date']}
     response.append(page_dic)
 
   return response 

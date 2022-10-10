@@ -1,24 +1,24 @@
 import React, {useState} from "react";
 
-async function fetchPost(query) {
-  const response = await fetch('/art', {
-    method: 'POST',
-    body: JSON.stringify({
-      body: query,
-    }),
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-    }
-  });
-  const jsonResp = await response.json();
-  console.log(jsonResp);
-}
 
 function Form(props){
+  async function fetchPost(queryStr) {
+    const response = await fetch('/art', {
+      method: 'POST',
+      body: JSON.stringify({
+        query: queryStr,
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      }
+    });
+    const jsonResp = await response.json();
+    props.addPages(jsonResp)
+  }
+
   const [query,setQuery] = useState('');
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(query);
     fetchPost(query)
     setQuery("");
   }
@@ -35,6 +35,10 @@ function Form(props){
         value={query}
         onChange = {handleChange}
       />
+      <button type="submit" className="btn btn__primary btn__lg">
+      Query
+      </button>
+
     </form>
   )
 }

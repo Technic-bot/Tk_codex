@@ -1,32 +1,32 @@
 import Form from "./components/Form";
-import React, {useState, useEffect} from "react";
+import Page from "./components/Page";
+import React, {useState} from "react";
 
 function App() {
-  const [post,setPosts] = useState([]);
-  useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/posts?_limit=10')
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      setPosts(data);
-    })
-    .catch((err) => {
-      console.log(err.message);
-    })
-  },[]);
+  const [pages,setPages] = useState([]);
 
-  const postList = post.map((post) => (
-    <div className="card" key={post.id}>
-      <h2 className="post-title">{post.title}</h2>
-      <p className="post-body">{post.body}</p>
-      <div className="delete-btn">Delete</div>
-    </div>
+  function addPages(pages) {
+    setPages(pages);
+    console.log("Adding Pages");
+    console.log(pages);
+  }
+
+  const pageList = pages.map((page) => (
+    <Page
+      number={page.number}
+      date={page.date}
+      url={page.url} 
+      title={page.title} 
+    />
   ));
 
   return (
     <div className="App">
-      <h1> Tk Codex </h1>
-     <Form />
+     <h1> Tk Codex </h1>
+     <Form addPages={addPages} />
+     <ul>
+      {pageList}
+     </ul>
     </div>
     
   );
