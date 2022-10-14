@@ -27,6 +27,32 @@ def char_post():
   r = char_search(characters)
   return r
 
+@app.route("/text",methods=['POST'])
+def text_post():
+  query = request.json['query']
+  if not query:
+    return {"pages": []},404
+
+
+  proc_query = '%' + query.lower() + '%'
+  sql_stmt = ('SELECT page,url,title,date FROM comic '
+              'WHERE lower(transcript) like ? ORDER BY page;')
+  
+  conn = get_db_connection(app.config['DATABASE'])
+  rows = conn.execute(sql_stmt,(proc_query,)).fetchall()
+  conn.close()
+
+  response = []
+
+  for r in rows:
+    page_dic = {'number':r['page'],
+                'url': r['url'],
+                'title': r['title'],
+                'date': r['date']}
+    response.append(page_dic)
+  return response
+
+
 @app.route("/art",methods=['GET'])
 def char_get():
   args = request.args
@@ -52,7 +78,7 @@ def char_search(characters):
   conn = get_db_connection(app.config['DATABASE'])
   rows = conn.execute(prep_sql_stmt,characters).fetchall()
   conn.close()
-  print("Getting all pages with {}".format(characters))
+  #print("Getting all pages with {}".format(characters))
 
   response = []
   for r in rows:

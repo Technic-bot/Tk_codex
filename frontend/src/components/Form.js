@@ -2,25 +2,11 @@ import React, {useState} from "react";
 
 
 function Form(props){
-  async function fetchPost(queryStr) {
-    const response = await fetch('/art', {
-      method: 'POST',
-      body: JSON.stringify({
-        query: queryStr,
-      }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      }
-    });
-    const jsonResp = await response.json();
-    props.addPages(jsonResp)
-  }
-
   const [query,setQuery] = useState('');
   function handleSubmit(e) {
     e.preventDefault();
-    fetchPost(query)
-    setQuery("");
+    props.fetch(query)
+    //setQuery("");
   }
   function handleChange(e) {
     setQuery(e.target.value);
@@ -28,15 +14,19 @@ function Form(props){
 
   return (
     <form onSubmit={handleSubmit}>
-      <label> Insert your query </label>
+      <label htmlFor="new-todo-input" className="label__lg"> 
+        {props.title}
+      </label>
       <input type="text"
         id="query-id"
         name="text"
+        className="input input__lg"
         value={query}
         onChange = {handleChange}
+        autoComplete="on"
       />
       <button type="submit" className="btn btn__primary btn__lg">
-      Query
+       Query
       </button>
 
     </form>

@@ -11,6 +11,34 @@ function App() {
     console.log(pages);
   }
 
+  async function fetchArt(queryStr) {
+    const response = await fetch('/art', {
+      method: 'POST',
+      body: JSON.stringify({
+        query: queryStr,
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      }
+    });
+    const jsonResp = await response.json();
+    addPages(jsonResp)
+  }
+
+  async function fetchText(queryStr) {
+    const response = await fetch('/text', {
+      method: 'POST',
+      body: JSON.stringify({
+        query: queryStr,
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      }
+    });
+    const jsonResp = await response.json();
+    addPages(jsonResp)
+  }
+
   const pageList = pages.map((page) => (
     <Page
       number={page.number}
@@ -21,9 +49,10 @@ function App() {
   ));
 
   return (
-    <div className="App">
-     <h1> Tk Codex </h1>
-     <Form addPages={addPages} />
+    <div className="App stack-large">
+     <h1 className="label-wrapper"> Tk Codex </h1>
+     <Form addPages={addPages} fetch={fetchArt} title={"Art search"} />
+     <Form addPages={addPages} fetch={fetchText} title={"Textual search"}/>
      <ul>
       {pageList}
      </ul>
