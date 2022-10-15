@@ -2,5 +2,6 @@ frontend/node_modules
 venv/
 backend/db/
 data/
+backend/__pycache__/
 *.swp
 *.pyc
