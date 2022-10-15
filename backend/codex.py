@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -50,7 +50,7 @@ def text_post():
                 'title': r['title'],
                 'date': r['date']}
     response.append(page_dic)
-  return response
+  return jsonify(response)
 
 
 @app.route("/art",methods=['GET'])
@@ -88,4 +88,4 @@ def char_search(characters):
                 'date': r['date']}
     response.append(page_dic)
 
-  return response 
+  return jsonify(response)

@@ -7,8 +7,6 @@ function App() {
 
   function addPages(pages) {
     setPages(pages);
-    console.log("Adding Pages");
-    console.log(pages);
   }
 
   async function fetchArt(queryStr) {
