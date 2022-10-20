@@ -2,7 +2,7 @@ drop table comic;
 drop table chars;
 
 CREATE TABLE IF NOT EXISTS "comic"(
-  "page" INTEGER,
+  "page" INTEGER PRIMARY KEY,
   "title" TEXT,
   "date" TEXT,
   "url" TEXT,
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS "comic"(
 );
 
 CREATE TABLE IF NOT EXISTS "chars"(
-  "page" INTEGER,
+  "page" INTEGER ,
   "character" TEXT
 );
 
