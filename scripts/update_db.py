@@ -59,6 +59,24 @@ def request_page(page_num):
   r.encoding = 'utf-8'
   return r.text
 
+
+def get_chars(pages):
+  # Aint it fun to define nested functions?
+  def _is_character(c): 
+    return ":" in  c
+    
+  char_list = []
+  for p in pages:
+    txn =p['transcript']
+    txn_list = txn.split()
+    p_chars = set(filter(_is_character,txn_list))
+    page_char_lst = [ (p['page'],x.strip(':')) for x in p_chars]
+    char_list.extend(page_char_lst)
+  
+  print(char_list)
+
+
+
 def persist(db_file, pages):
   print("persisting to database")
   conn = sqlite3.connect(db_file)
@@ -71,6 +89,7 @@ def persist(db_file, pages):
   conn.commit()
   conn.close()
   return
+
 
 def proc_opts():
   parser = argparse.ArgumentParser(description='Page updater')
@@ -93,9 +112,9 @@ if __name__ == "__main__":
     page = request_page(p)
     title,date,url,txn = parse_page(page)
     page_dic = {"page":p,'title':title,'date':date,'url':url,'transcript':txn}
-    pprint(page_dic)
     datum.append(page_dic)
 
-  persist(args.db,datum)
+  get_chars(datum)
+#  persist(args.db,datum)
 
 
