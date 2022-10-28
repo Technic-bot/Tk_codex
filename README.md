@@ -1,8 +1,8 @@
 # TK Codex
 
-This repo is my small database repository for [Twokinds](https://twokinds.keenspot.com) the comic by Tom Fischbach. 
+This repo is my small database I made for [Twokinds](https://twokinds.keenspot.com) the comic by Tom Fischbach. 
 In general it is very hard to try to look for anything specific
-in the comic pages itself, this small website allows you to search per character and per textual dialogue
+in the comic pages itself, this small website allows you to search per character and per textual dialogue.
 
 This by no means try to replace the excellent [Codex Mr Amenon](https://2ks.wogcodex.com) did. Go check that out it is
 very cool! Mine lacks features like negative searches and aliases. Moreover Amenons codex indexed panel content by hand
