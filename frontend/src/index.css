@@ -226,6 +226,13 @@ body {
 .todo-text:focus {
   box-shadow: inset 0 0 0 2px;
 }
+
+li.todo::before {
+  content: "📄";
+  position: absolute;
+  border: 2px solid currentcolor;
+  background: transparent;
+}
 /* CHECKBOX STYLES */
 .c-cb {
   box-sizing: border-box;
@@ -260,10 +267,10 @@ body {
   font-size: inherit;
   font-family: inherit;
   line-height: inherit;
-  display: inline-block;
+ display: inline-block;
   margin-bottom: 0;
   padding: 8px 15px 5px;
-  cursor: pointer;
+  /*cursor: pointer;*/
   touch-action: manipulation;
 }
 .c-cb > label::before {

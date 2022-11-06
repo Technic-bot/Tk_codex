@@ -1,39 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>About Codex</title>
-<link rel="stylesheet" href="about.css">
-</head>
-<body>
-
-<div class="about">
-<h1>About this Codex</h1>
-  <p> Hello folks! 
-  I see you have landed in my tiny codex.
-  This is intended as a way to quickly search for art and the contents of the comic.
-  Pretty much like he excellent <a href=https://2ks.wogcodex.com/> Tk Codex by Amenon </a>
-  </p>
-  <p>This is by no means intends to replace Amenon work, functionality is not as extensive 
-  as his site, but this is an open source project meaning anyone other than me can 
-  host it, it also has some features that allow it to be automatically up to date. 
-  You can check the project  <a href=https://github.com/Technic-bot/Tk_codex>https://github.com/Technic-bot/Tk_codex </a> for cloning and other details.
-  </p>
-</div>
-
-<div class="usage">
-  <p> Relatively simple, you have 2 options art search for characters and text search for textual searches. First one simple add a space separated list of the characters you want to see: <p>
-  <div class="example">
-    <p> Natani Flora Keith </p>
-  </div>
-  <p> The  other simply add textual search, search is not stemmed so you need to be textual on what you want: <p>
-  <div class="example">
-    <p>But that magic’s forbidden!</p>
-  </div>
-  <p> you do not need to respect capitalization though all search is done on lowercase characters</p>
-</div>
-
-
-
-</body>
-</html>
-
+<h1 id="tk-codex">TK Codex</h1>
+<p>Hi! i see you found my small database I made for <a href="https://twokinds.keenspot.com">Twokinds</a> the comic by Tom Fischbach. I made thid because in general it is very hard to try to look for anything specific in the comic pages itself, this small website allows you to search per character and per textual dialogue.</p>
+<p>This by no means try to replace the excellent <a href="https://2ks.wogcodex.com">Codex Mr Amenon</a> did. Go check that out it is very cool! Mine lacks features like negative searches and aliases. Moreover Amenons codex indexed panel content by hand something mine does not.</p>
+<p>Main difference with Amenons work is this thing is up to date with the comic and has, or should have, some features to keep it automatically in sync whenever a new page comes out. Finally it is completely open source so you can host your own and or use it for whatever reason.</p>
+<p>This is first an exercise for me to learn some web development, you can tell i know nothing of css, and second combining something of my work on twokinds data into something usable for all.</p>
+<p>Again my final objective with this is for people to have some way to quickly crossreference information on the comic. Hope you find this useful and at least half as interesting as I did making it.</p>
+<h2 id="usage">Usage</h2>
+<p>You get 2 searches Art and Text: Art deals with characters on scene, currently only talking characters are matched, so for example, Dahlia bodyguard is not indexed since she never speaks. May update manually over time for these cases but in most of the cases is not a very big limitation</p>
+<p>To use it simply add a space separated list of every character, then system will then fetch all pages where ALL the characters in the list appear, case insensitive. for example the query:</p>
+<pre><code>Natani Laura Trace</code></pre>
+<p>Yields the following:</p>
+<ul>
+<li>211, 2005-08-03, Comic for August 3, 2005</li>
+<li>430, 2008-02-27, Comic for February 27, 2008</li>
+<li>752, 2013-08-04, Comic for August 4, 2013</li>
+<li>756, 2013-09-08, Comic for September 8, 2013</li>
+<li>757, 2013-09-17, Comic for September 17, 2013</li>
+</ul>
+<p>For textual search the system will fetch everything that matches the exact string you put there for example:</p>
+<pre><code>25,000</code></pre>
+<p>Returns:</p>
+<ul>
+<li>256, 2006-04-24, Comic for April 24, 2006</li>
+</ul>
+<p>Just for clarity output is a list and the header is as it follows:</p>
+<ul>
+<li>Page number, Release Date, Comic Title (Most early comics used release date as titles)</li>
+</ul>
+<p>And that is pretty much it, there are plans to add more features in the future but at least what there is here should be functional</p>
+<h2 id="contact-and-further-links">Contact and further links</h2>
+<p>For further information check the project github which, should, have more detailed information and documentation as well as how to deploy your own, plus you can hit me with PRs, bugs complainst etc!</p>
+<p><a href="https://github.com/Technic-bot/Tk_codex">Techbot Codex Github Repo</a></p>
