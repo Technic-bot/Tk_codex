@@ -51,7 +51,7 @@ function App() {
     <div class="topnav">
       <a href="./about">About</a>
     </div>
-     <h1 className="label-wrapper"> Tk Codex </h1>
+     <h1 className="label-wrapper"> Twokinds Codex </h1>
      <Form addPages={addPages} fetch={fetchArt} title={"Art search"} />
      <Form addPages={addPages} fetch={fetchText} title={"Textual search"}/>
      <ul>
