@@ -31,6 +31,9 @@ def parse_page(page):
     date_obj = datetime.strptime(date,'%Y%m%d')
     date = datetime.strftime(date_obj,'%Y-%m-%d')
     transcript = comic.find(class_='transcript-content')
+
+    permalink = sopa.find(class_="permalink")
+    page = get_page_number(permalink)
     if transcript:
       transcript_txt = transcript.text
       transcript_txt = re.sub(r"Page transcript .*",'',transcript_txt)
@@ -44,8 +47,20 @@ def parse_page(page):
     date = ""
     url = ""
     title = ""
+    page = None
   
-  return title, date, url, transcript_txt.strip()
+  return title, date, url, transcript_txt.strip(), page
+
+def get_page_number(permalink):
+    hrefs = permalink.find_all("a")
+    page = None
+    for h in hrefs: 
+      if h.text == "Permalink":
+        page = h['href'].split("/")[2]
+
+    print(page)
+    return page
+
 
 def request_page(page_num):
   """ Request a comic page"""
@@ -78,7 +93,7 @@ def get_chars(pages):
 
 
 def persist(db_file, pages):
-  print("persisting to database")
+  print("Persisting to database")
   conn = sqlite3.connect(db_file)
   conn.row_factory = sqlite3.Row
   cursor = conn.cursor()
@@ -111,7 +126,6 @@ def deduplicate(db_file):
   sql_stmt = ("delete from chars where rowid not in " 
              "(select  min(rowid) from chars group by page,character);")
   cursor.execute(sql_stmt)
-  
   conn.commit()
   conn.close()
 
@@ -138,14 +152,20 @@ if __name__ == "__main__":
   from pprint import pprint
   datum = []
   for p in pages:
-    page = request_page(p)
-    title,date,url,txn = parse_page(page)
+    html_page = request_page(p)
+    title,date,url,txn,parsed_page = parse_page(html_page)
+    page_no = p
     if title:
-      page_dic = {"page":p,'title':title,'date':date,'url':url,'transcript':txn}
+      if not page_no:
+        # No page passed try to use parsed page
+        page_no = parsed_page
+      page_dic = {"page":page_no,'title':title,'date':date,'url':url,'transcript':txn}
       datum.append(page_dic)
 
+  print(datum)
   if not datum:
     print("Nothing parsed")
+
   persist(args.db,datum)
 
   chrs = get_chars(datum)
