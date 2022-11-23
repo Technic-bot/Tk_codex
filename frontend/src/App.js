@@ -4,6 +4,8 @@ import React, {useState} from "react";
 
 function App() {
   const [pages,setPages] = useState([]);
+  const [artQuery,setArtQuery] = useState('');
+  const [charQuery,setCharQuery] = useState('');
 
   function addPages(pages) {
     setPages(pages);
@@ -46,15 +48,25 @@ function App() {
     />
   ));
 
+  let resultsSentence = "";
+  if (pageList.length !== 0){
+    resultsSentence = "Got " + pageList.length + " results from query";
+  }
+
+  const combinedQuery = charQuery + ' ' + artQuery; 
+
   return (
     <div className="App stack-large">
     <div class="topnav">
       <a href="./about">About</a>
     </div>
      <h1 className="label-wrapper"> Twokinds Codex </h1>
-     <Form addPages={addPages} fetch={fetchArt} title={"Art search"} />
-     <Form addPages={addPages} fetch={fetchText} title={"Textual search"}/>
-     <ul>
+     <Form addPages={addPages} fetch={fetchArt} title={"Art search"}
+         query={artQuery} setQuery={setArtQuery}/>
+     <Form addPages={addPages} fetch={fetchText} title={"Textual search"} 
+         query={charQuery} setQuery={setCharQuery}/>
+     <p> {resultsSentence} </p>
+    <ul>
       {pageList}
      </ul>
     </div>

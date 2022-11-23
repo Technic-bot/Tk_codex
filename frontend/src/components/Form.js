@@ -2,14 +2,13 @@ import React, {useState} from "react";
 
 
 function Form(props){
-  const [query,setQuery] = useState('');
+  //const [query,setQuery] = useState('');
   function handleSubmit(e) {
     e.preventDefault();
-    props.fetch(query)
-    //setQuery("");
+    props.fetch(props.query)
   }
   function handleChange(e) {
-    setQuery(e.target.value);
+    props.setQuery(e.target.value);
   }
 
   return (
@@ -21,7 +20,7 @@ function Form(props){
         id="query-id"
         name="text"
         className="input input__lg"
-        value={query}
+        value={props.query}
         onChange = {handleChange}
         autoComplete="on"
       />
