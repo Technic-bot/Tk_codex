@@ -12,13 +12,57 @@ def get_db_connection(db_file):
 
 @app.route("/test")
 def test_api():
+  """Test endpoint to verify connectivity"""
   conn = get_db_connection(app.config['DATABASE'])
   res = conn.execute('Select count(*) from comic').fetchone()
   conn.close()
   return {"Records": res[0]} 
 
+@app.route("/dialogue",methods=['POST'])
+def dialogue():
+  """ Get matching dialogue 
+      Matches some arbitrary text to some dialogue
+      by one or more characters
+  """
+  chars = request.json['characters'].split()
+  chars = [c.lower() for c in chars]
+  text  = request.json['text']
+  if not text or not chars:
+    return {"pages": []},404
+
+  question_marks = ','.join('?'*len(chars))
+  sql_stmt = ('SELECT comic.page, comic.url, comic.title, comic.date'
+              ' FROM comic'
+              ' INNER JOIN script ON'
+              ' comic.page == script.page'
+              ' WHERE lower(script.speaker) IN ({})'
+              ' AND  lower(script.dialogue) like ? '
+              ' ORDER BY comic.page;')
+  sql_stmt = sql_stmt.format(question_marks)
+  
+  proc_query = '%' + text.lower() + '%'
+  sub_arr = chars + [proc_query]
+  conn = get_db_connection(app.config['DATABASE'])
+  rows = conn.execute(sql_stmt,sub_arr).fetchall()
+  conn.close()
+
+  response = []
+
+  for r in rows:
+    page_dic = {'number':r['page'],
+                'url': r['url'],
+                'title': r['title'],
+                'date': r['date']}
+    response.append(page_dic)
+
+  return jsonify(response)
+
 @app.route("/art",methods=['POST'])
 def char_post():
+  """ Check for art
+      Searches for one or more character
+      that had dialogue in one page
+  """
   query = request.json['query']
   characters = query.split()
   if not characters:
@@ -64,14 +108,14 @@ def char_get():
   return r
 
 def char_search(characters):
-  """Query DB for pages"""
+  """Query DB for characters in pages"""
   characters = [c.lower() for c in characters]
   # Not sure if group by and having is the correct method
   question_marks = ','.join('?'*len(characters))
   sql_stmt = ('SELECT comic.page, comic.url, comic.title, comic.date,'
               ' count(*) n FROM chars'
               ' INNER JOIN comic ON'
-              ' comic.page = chars.page'
+              ' comic.page == chars.page'
               ' WHERE lower(CHARACTER) IN ({}) group by comic.page having n == {}'
               ' ORDER BY comic.page;')
   prep_sql_stmt=sql_stmt.format(question_marks,len(characters)) 
