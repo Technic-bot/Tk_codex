@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, request, jsonify
+from flask import Flask, request, Response, jsonify
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -28,7 +28,7 @@ def dialogue():
   chars = [c.lower() for c in chars]
   text  = request.json['text']
   if not text or not chars:
-    return {"pages": []},404
+    return {"pages": []},400
 
   question_marks = ','.join('?'*len(chars))
   sql_stmt = ('SELECT comic.page, comic.url, comic.title, comic.date'
@@ -66,7 +66,8 @@ def char_post():
   query = request.json['query']
   characters = query.split()
   if not characters:
-    return {"pages": []},404
+    #return {"pages": []},400
+    return Response(status=400)
 
   r = char_search(characters)
   return r
@@ -75,7 +76,7 @@ def char_post():
 def text_post():
   query = request.json['query']
   if not query:
-    return {"pages": []},404
+    return {"pages": []},400
 
 
   proc_query = '%' + query.lower() + '%'

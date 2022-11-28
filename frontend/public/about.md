@@ -20,7 +20,7 @@ Hope you find this useful and at least half as interesting as I did making it.
 
 
 ## Usage
-You get  2 searches Art and Text: Art deals with characters on scene, currently only talking characters are matched, so
+You get 3 searches Art, Text and Dialogue: Art deals with characters on scene, currently only talking characters are matched, so
 for example, Dahlia bodyguard is not indexed since she never speaks. May update manually over time for these cases but
   in most of the cases is not a very big limitation
 
@@ -48,6 +48,26 @@ For textual search the system will fetch everything that matches the exact strin
 Returns:
 
 - 256, 2006-04-24, Comic for April 24, 2006 
+
+Dialogue query means to use both inputs to search for any text limited to the characters. In other words it allows you
+to search for a specific line of text spoken by one or more characters. You do need to use both field and hit the
+Dialogue Query button at the button
+
+For example the query with Art set to:
+
+```
+stoneward
+```
+
+And text as:
+
+```
+child
+```
+
+Returns
+
+- 1171, 2022-04-16, Comic for April 16, 2022: Purpose 
 
 Just for clarity output is a list and the header is as it follows:
 

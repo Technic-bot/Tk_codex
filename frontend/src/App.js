@@ -1,42 +1,83 @@
 import Form from "./components/Form";
+import QueryButton from "./components/QueryButton";
 import Page from "./components/Page";
 import React, {useState} from "react";
 
 function App() {
   const [pages,setPages] = useState([]);
   const [artQuery,setArtQuery] = useState('');
-  const [charQuery,setCharQuery] = useState('');
+  const [textQuery,setTextQuery] = useState('');
 
   function addPages(pages) {
     setPages(pages);
   }
 
   async function fetchArt(queryStr) {
-    const response = await fetch('/art', {
-      method: 'POST',
-      body: JSON.stringify({
-        query: queryStr,
-      }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      }
-    });
-    const jsonResp = await response.json();
-    addPages(jsonResp)
+    try {
+      const response = await fetch('/art', {
+        method: 'POST',
+        body: JSON.stringify({
+          query: queryStr,
+        }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        }
+      });
+
+      if (response.ok) {
+        const jsonResp = await response.json();
+        addPages(jsonResp);
+      } 
+
+    } catch(err) {
+      console.log(err);
+    }
   }
 
   async function fetchText(queryStr) {
-    const response = await fetch('/text', {
-      method: 'POST',
-      body: JSON.stringify({
-        query: queryStr,
-      }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
+    try {
+      const response = await fetch('/text', {
+        method: 'POST',
+        body: JSON.stringify({
+          query: queryStr,
+        }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        }
+      });
+
+      if (response.ok) {
+        const jsonResp = await response.json();
+        addPages(jsonResp);
       }
-    });
-    const jsonResp = await response.json();
-    addPages(jsonResp)
+    
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  async function fetchScript(charsQuery,textQuery) {
+    try {
+      const response = await fetch('/dialogue', {
+        method: 'POST',
+        body: JSON.stringify({
+          characters: charsQuery,
+          text: textQuery
+        }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        }
+      });
+
+      if (response.ok){
+        const jsonResp = await response.json();
+        addPages(jsonResp);
+      }
+
+    } catch(err) {
+      console.log(err);
+    }
+
   }
 
   const pageList = pages.map((page) => (
@@ -53,8 +94,6 @@ function App() {
     resultsSentence = "Got " + pageList.length + " results from query";
   }
 
-  const combinedQuery = charQuery + ' ' + artQuery; 
-
   return (
     <div className="App stack-large">
     <div class="topnav">
@@ -64,7 +103,8 @@ function App() {
      <Form addPages={addPages} fetch={fetchArt} title={"Art search"}
          query={artQuery} setQuery={setArtQuery}/>
      <Form addPages={addPages} fetch={fetchText} title={"Textual search"} 
-         query={charQuery} setQuery={setCharQuery}/>
+         query={textQuery} setQuery={setTextQuery}/>
+     <QueryButton fetch={fetchScript} chars={artQuery} text={textQuery}/>
      <p> {resultsSentence} </p>
     <ul>
       {pageList}
