@@ -1,8 +1,11 @@
+# Estos comentarios en español estan dedicados a TeapotOfDoom
+# Prueba generica para verificar que el API se levanta
 def test_test(client):
   resp = client.get('/test')
   print(resp.json)
   assert isinstance(resp.json['Records'],int)
 
+# Prueba que podamos hacer una consulta multi personajes
 def test_art(client):
   payload = {"query":"Dahlia Keiren Daniels Therie"}
   headers = {"Content-Type": "application/json"}
@@ -10,6 +13,7 @@ def test_art(client):
   page = resp.json[0]['number']
   assert page == 1181
 
+# Prueba que se funcionen la consultas textuales
 def test_text(client):
   payload = {"query":"gay rumors"}
   headers = {"Content-Type": "application/json"}
@@ -17,6 +21,8 @@ def test_text(client):
   page = resp.json[0]['number']
   assert page == 504
 
+# Prueba para consultas de dialogos
+# Estas consultan texto pero solo sobre uno o mas personajes
 def test_dialogue_single(client):
   payload = {"characters":"Natani","text":"gay rumors"}
   headers = {"Content-Type": "application/json"}
@@ -24,6 +30,7 @@ def test_dialogue_single(client):
   page = resp.json[0]['number']
   assert page == 504
 
+# Misma prueba pero para multiples personajes
 def test_dialogue_multi(client):
   payload = {"characters":"Natani keith","text":"gay"}
   headers = {"Content-Type": "application/json"}
