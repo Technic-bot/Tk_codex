@@ -117,18 +117,51 @@ def persist_chars(db_file,chars):
   conn.commit()
   conn.close()
   
-
 def deduplicate(db_file):
   print("Removing duplicates")
   conn = sqlite3.connect(db_file)
   conn.row_factory = sqlite3.Row
   cursor = conn.cursor()
+  # De duplicate char table
   sql_stmt = ("delete from chars where rowid not in " 
              "(select  min(rowid) from chars group by page,character);")
+  cursor.execute(sql_stmt)
+  # Deduplicate script
+  sql_stmt = ("delete from script where rowid not in " 
+             "(select  min(rowid) from script group by page,dialogue,speaker);")
   cursor.execute(sql_stmt)
   conn.commit()
   conn.close()
 
+def make_script(pages):
+  script = []
+  for p in pages:
+    lines = p['transcript'].split('\n')
+    for line in lines:
+      try:
+        char,dial = line.split(':')
+      except ValueError as e:
+        print("Error: {}".format(line))
+
+      line_dic = { 'speaker': char,
+                    'dialogue' : dial,
+                    'page': p['page'] }
+      script.append(line_dic)
+
+  return script
+
+def persist_script(db_file,script):
+  print("Persisting Script to database")
+  conn = sqlite3.connect(db_file)
+  conn.row_factory = sqlite3.Row
+  cursor = conn.cursor()
+  sql_stmt = ("INSERT OR REPLACE INTO script (page,dialogue,speaker) "
+              "VALUES (:page,:dialogue,:speaker);")
+  cursor.executemany(sql_stmt,script)
+  
+  conn.commit()
+  conn.close()
+  return
 
 def proc_opts():
   parser = argparse.ArgumentParser(description='Page updater')
@@ -162,7 +195,7 @@ if __name__ == "__main__":
       page_dic = {"page":page_no,'title':title,'date':date,'url':url,'transcript':txn}
       datum.append(page_dic)
 
-  print(datum)
+  #print(datum)
   if not datum:
     print("Nothing parsed")
 
@@ -170,6 +203,10 @@ if __name__ == "__main__":
 
   chrs = get_chars(datum)
   persist_chars(args.db,chrs)
+
+  scrpt = make_script(datum)  
+  persist_script(args.db,scrpt)
+
   deduplicate(args.db)
 
 

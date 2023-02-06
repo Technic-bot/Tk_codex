@@ -1,6 +1,6 @@
 drop table comic;
 drop table chars;
-drop table dialogue;
+drop table script;
 
 CREATE TABLE IF NOT EXISTS "comic"(
   "page" INTEGER PRIMARY KEY,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS "chars"(
 );
 
 CREATE TABLE IF NOT EXISTS "script"(
-  "page" INTEGER,
+  "page" INTEGER ,
   "dialogue" TEXT,
   "speaker" TEXT
 );
