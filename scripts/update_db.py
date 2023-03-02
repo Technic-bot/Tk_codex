@@ -141,7 +141,8 @@ def make_script(pages):
       try:
         char,dial = line.split(':')
       except ValueError as e:
-        print("Error: {}".format(line))
+        print("Error in page {} : {}".format(p['page'],line))
+        continue
 
       line_dic = { 'speaker': char,
                     'dialogue' : dial,

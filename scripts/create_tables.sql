@@ -1,3 +1,5 @@
+-- to run from root
+-- sqlite3 backend/db/twk.db < scripts/create_tables.sql 
 drop table comic;
 drop table chars;
 drop table script;
