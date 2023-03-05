@@ -33,15 +33,16 @@ def dialogue():
   question_marks = ','.join('?'*len(chars))
   sql_stmt = ('SELECT comic.page, comic.url, comic.title, comic.date'
               ' FROM comic'
-              ' INNER JOIN script ON'
-              ' comic.page == script.page'
-              ' WHERE lower(script.speaker) IN ({})'
+              ' INNER JOIN script ON comic.page == script.page'
+              ' LEFT JOIN alias ON alias.name == script.speaker'
+              ' WHERE ( lower(script.speaker) IN ({}) OR'
+              ' lower(alias.alias) IN ({}) )'
               ' AND  lower(script.dialogue) like ? '
               ' ORDER BY comic.page;')
-  sql_stmt = sql_stmt.format(question_marks)
+  sql_stmt = sql_stmt.format(question_marks,question_marks)
   
   proc_query = '%' + text.lower() + '%'
-  sub_arr = chars + [proc_query]
+  sub_arr = 2*chars + [proc_query]
   conn = get_db_connection(app.config['DATABASE'])
   rows = conn.execute(sql_stmt,sub_arr).fetchall()
   conn.close()
@@ -111,17 +112,26 @@ def char_get():
 def char_search(characters):
   """Query DB for characters in pages"""
   characters = [c.lower() for c in characters]
+  n_chars = len(characters)
   # Not sure if group by and having is the correct method
-  question_marks = ','.join('?'*len(characters))
-  sql_stmt = ('SELECT comic.page, comic.url, comic.title, comic.date,'
-              ' count(*) n FROM chars'
-              ' INNER JOIN comic ON'
-              ' comic.page == chars.page'
-              ' WHERE lower(CHARACTER) IN ({}) group by comic.page having n == {}'
+  question_marks = ','.join('?'*(n_chars))
+
+  sql_stmt = ('SELECT comic.page, comic.url, title, comic.date,'
+              ' count(distinct script.speaker) n'
+              ' FROM comic'
+              ' INNER JOIN script ON script.page = comic.page'
+              ' LEFT JOIN alias on script.speaker = alias.name'
+              ' WHERE lower(speaker) in ({}) OR'
+              ' lower(alias) in ({})'
+              ' group by comic.page having n == {}'
               ' ORDER BY comic.page;')
-  prep_sql_stmt=sql_stmt.format(question_marks,len(characters)) 
+
+  prep_sql_stmt=sql_stmt.format(question_marks,question_marks,n_chars)
+  print(prep_sql_stmt)
+  print(characters)
   conn = get_db_connection(app.config['DATABASE'])
-  rows = conn.execute(prep_sql_stmt,characters).fetchall()
+  # Pythonic stuff, multiplying and arrya by 2 constant duplicates it
+  rows = conn.execute(prep_sql_stmt,2*characters).fetchall()
   conn.close()
   #print("Getting all pages with {}".format(characters))
 

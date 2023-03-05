@@ -15,8 +15,6 @@ if __name__=="__main__":
   max_page = twk_df.index.max()
   print(f"Max page is: {max_page}")
 
-  unq_chars = twk_df['speaker'].unique()
-  print(twk_df['speaker'].isna() )
-  print(twk_df.loc[1186])
-  print(unq_chars)
+  unq_chars = twk_df['speaker'].dropna().unique()
+  print(sorted(unq_chars))
 

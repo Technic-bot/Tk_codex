@@ -23,6 +23,11 @@ CREATE TABLE IF NOT EXISTS "script"(
   "speaker" TEXT
 );
 
+CREATE TABLE IF NOT EXISTS "alias"(
+  "name" TEXT,
+  "alias" TEXT
+)
+
 .mode csv
 .import data/raw_csv/twk_chars.csv chars
 .import data/raw_csv/twk_data.csv comic
